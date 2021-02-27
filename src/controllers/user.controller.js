@@ -1,6 +1,6 @@
 let _userService = null;
 class UserController {
-  constructor(UserService) {
+  constructor({ UserService }) {
     _userService = UserService;
   }
 
