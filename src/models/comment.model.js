@@ -1,16 +1,21 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const CommentSchema = new Schema({
-  comment: { type: String, required: true },
-  description: { type: String },
-  author: {
-    type: Schema.Types.ObjectId,
-    ref: "user",
-    required: true,
-    autopopulate: true,
+const CommentSchema = new Schema(
+  {
+    comment: { type: String, required: true },
+    ideaId: { type: String, required: true },
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+      autopopulate: true,
+    },
   },
-});
+  {
+    timestamps: true,
+  }
+);
 
 CommentSchema.plugin(require("mongoose-autopopulate"));
 

@@ -10,6 +10,11 @@ class UserRepository extends BaseRepository {
   async getUserByUsername(username) {
     return await _user.findOne({ username });
   }
+
+  async update(id, entity) {
+    delete entity.password;
+    return await this.model.findByIdAndUpdate(id, entity, { new: true });
+  }
 }
 
 module.exports = UserRepository;
