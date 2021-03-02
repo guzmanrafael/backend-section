@@ -49,13 +49,4 @@ describe("Comment Service Tests", () => {
     const expected = await _commentService.getIdeaComments(idea._id);
     expect(expected).toMatchObject(comments);
   });
-
-  it("Should create a comment", async () => {
-    const CommentRepository = CommentRepositoryMock;
-    CommentRepository.createdComment.mockReturnValue(comment, idea._id);
-
-    const _commentService = new CommentService({ CommentRepository });
-    const expected = await _commentService.createdComment(comment, idea._id);
-    expect(expected).toMatchObject(comment);
-  });
 });

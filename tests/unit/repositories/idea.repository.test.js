@@ -28,13 +28,6 @@ describe("Idea Repository Tests", () => {
     expect(JSON.parse(JSON.stringify(expected))).toMatchObject(ideas);
   });
 
-  it("Should return a new idea", async () => {
-    mockingoose(Idea).toReturn(idea, "save");
-    const _ideaRepository = new IdeaRepository({ Idea });
-    const expected = await _ideaRepository.create(idea);
-    expect(JSON.parse(JSON.stringify(expected))).toMatchObject(idea);
-  });
-
   it("Should update an especific idea by id", async () => {
     const _idea = { ...idea };
     mockingoose(Idea).toReturn(_idea, "findOneAndUpdate");

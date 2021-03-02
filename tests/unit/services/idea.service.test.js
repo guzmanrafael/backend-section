@@ -18,15 +18,6 @@ describe("Idea Service Tests", () => {
     expect(expected).toMatchObject(idea);
   });
 
-  it("Should create a idea", async () => {
-    const IdeaRepository = IdeaRepositoryMock;
-    IdeaRepository.create.mockReturnValue(idea);
-
-    const _ideaService = new IdeaService({ IdeaRepository });
-    const expected = await _ideaService.create();
-    expect(expected).toMatchObject(idea);
-  });
-
   it("Should return a idea collection", async () => {
     const IdeaRepository = IdeaRepositoryMock;
     IdeaRepository.getAll.mockReturnValue(ideas);

@@ -47,12 +47,4 @@ describe("Comment Repository Tests", () => {
 
     expect(JSON.parse(JSON.stringify(expected))).toMatchObject(comment);
   });
-
-  it("Should create a comment", async () => {
-    mockingoose(Comment).toReturn(comment, "save");
-
-    const _commentRepository = new CommentRepository({ Comment });
-    const expected = await _commentRepository.create(comment, idea._id);
-    expect(JSON.parse(JSON.stringify(expected))).toMatchObject(comment);
-  });
 });
