@@ -15,7 +15,6 @@ class AuthService {
       error.message = "User already exists";
       throw error;
     }
-
     return await _userService.create(user);
   }
 
