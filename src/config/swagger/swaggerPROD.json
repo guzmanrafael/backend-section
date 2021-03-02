@@ -1,122 +1,844 @@
 {
   "swagger": "2.0",
   "info": {
+    "description": "API ShareYourIdea",
     "version": "1.0.0",
-    "title": "My User Project CRUD",
-    "description": "My User Project Application API",
+    "title": "Swagger ShareYourIdea",
+    "contact": {
+      "email": "rafael.guzman1609@gmail.com"
+    },
     "license": {
-      "name": "MIT",
-      "url": "https://opensource.org/licenses/MIT"
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
   },
-  "host": "localhost:8000",
-  "basePath": "/",
+  "host": "localhost:5000",
+  "basePath": "/v1/api",
   "tags": [
     {
-      "name": "Users",
-      "description": "API for users in the system"
+      "name": "Auth",
+      "description": "Operations about auth"
+    },
+    {
+      "name": "User",
+      "description": "Operations about user"
+    },
+    {
+      "name": "Idea",
+      "description": "Everything your ideas"
+    },
+    {
+      "name": "Comment",
+      "description": "Everything your comments"
     }
   ],
   "schemes": [
-    "http"
-  ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
+    "http",
+    "https"
   ],
   "paths": {
-    "/addUser": {
+    "/auth/signIn": {
       "post": {
         "tags": [
-          "Users"
+          "Auth"
         ],
-        "description": "Create new user in system",
-        "parameters": [
-          {
-            "name": "user",
-            "in": "body",
-            "description": "User that we want to create",
-            "schema": {
-              "$ref": "#/definitions/User"
-            }
-          }
-        ],
+        "summary": "Sign in",
+        "description": "",
         "produces": [
           "application/json"
         ],
-        "responses": {
-          "200": {
-            "description": "New user is created",
+        "parameters": [
+          {
+            "name": "User",
+            "in": "body",
+            "description": "",
+            "required": true,
             "schema": {
-              "$ref": "#/definitions/User"
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              }
             }
           }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  },
+                  "user": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "username": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        }
+      },
+      "produces": [
+        "application/json"
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful sign in",
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "type": "string"
+                },
+                "user": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "username": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "404":{
+          "description": "User does not exists"
+        },
+        "400":{
+          "description": "Invalid Password"
         }
       }
     },
-    "/users": {
-      "get": {
+    "/auth/signUp": {
+      "post": {
         "tags": [
-          "Users"
+          "Auth"
         ],
-        "summary": "Get all users in system",
+        "summary": "Sign up",
+        "description": "",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "User",
+            "in": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "username": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/Users"
+              "$ref": "#/definitions/User"
             }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        }
+      },
+      "produces": [
+        "application/json"
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful sign up",
+          "schema": {
+            "$ref": "#/definitions/User"
+          }
+        },
+        "400":{
+          "description": "User already exists"
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Finds All the Users",
+        "description": "",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "pageNum",
+            "type": "number",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "pageSize",
+            "type": "number",
+            "in": "query",
+            "required": false
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Authorization header for JWT",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
           }
         }
       }
     },
     "/user/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "ID of user that we want to find",
-          "type": "integer"
-        }
-      ],
-      "delete": {
-        "summary": "Delete user with given ID",
+      "get": {
         "tags": [
-          "Users"
+          "User"
         ],
-        "responses": {
-          "200": {
-            "description": "User is deleted",
-            "schema": {
-              "$ref": "#/definitions/User"
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Update user with give ID",
-        "tags": [
-          "Users"
+        "summary": "Find one user",
+        "description": "",
+        "produces": [
+          "application/json"
         ],
         "parameters": [
           {
-            "name": "user",
-            "in": "body",
-            "description": "User with new values of properties",
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "description": "User Id",
+            "required": true
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Authorization header for JWT",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/updateUser"
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid tag value"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Update one user",
+        "description": "",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "description": "User Id",
+            "required": true
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Authorization header for JWT",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Update User",
+            "in": "body",
+            "description": "Update User",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "username": {
+                  "type": "string"
+                }
+              }
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "User is updated",
+            "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/User"
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
             }
+          },
+          "400": {
+            "description": "Invalid tag value"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Delete one user",
+        "description": "",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "description": "User Id",
+            "required": true
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Authorization header for JWT",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid tag value"
+          }
+        }
+      }
+    },
+    "/idea": {
+      "get": {
+        "tags": [
+          "Idea"
+        ],
+        "summary": "Finds All the Ideas",
+        "description": "",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "pageNum",
+            "type": "number",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "pageSize",
+            "type": "number",
+            "in": "query",
+            "required": false
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Authorization header for JWT",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Idea"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        }
+      },
+      "post":{
+        "tags": [
+          "Idea"
+        ],
+        "summary": "Create one idea",
+        "description": "",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Authorization header for JWT",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Create idea",
+            "in": "body",
+            "description": "create idea",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "idea": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "author":{
+                  "type":"string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Idea"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid tag value"
+          }
+        }
+      }
+    },
+    "/idea/{ideaId}": {
+      "get": {
+        "tags": [
+          "Idea"
+        ],
+        "summary": "Find one Idea",
+        "description": "",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ideaId",
+            "in": "path",
+            "type": "string",
+            "description": "Idea Id",
+            "required": true
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Authorization header for JWT",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Idea"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid tag value"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Idea"
+        ],
+        "summary": "Update one idea",
+        "description": "",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ideaId",
+            "in": "path",
+            "type": "string",
+            "description": "Idea Id",
+            "required": true
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Authorization header for JWT",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Update Idea",
+            "in": "body",
+            "description": "Update Idea",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "idea": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Idea"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid tag value"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Idea"
+        ],
+        "summary": "Delete one idea",
+        "description": "",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ideaId",
+            "in": "path",
+            "type": "string",
+            "description": "Idea Id",
+            "required": true
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Authorization header for JWT",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid tag value"
+          }
+        }
+      }
+    },
+    "/idea/{userId}/all":{
+      "get": {
+        "tags": [
+          "Idea"
+        ],
+        "summary": "Find Users Ideas",
+        "description": "",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "type": "string",
+            "description": "User Id",
+            "required": true
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Authorization header for JWT",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Idea"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid tag value"
+          }
+        }
+      }
+    },
+    "/comment/{ideaId}": {
+      "get": {
+        "tags": [
+          "Comment"
+        ],
+        "summary": "Find Comments",
+        "description": "",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ideaId",
+            "in": "path",
+            "type": "string",
+            "description": "Idea Id",
+            "required": true
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Authorization header for JWT",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Comment"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid tag value"
+          }
+        }
+      },
+      "post":{
+        "tags": [
+          "Comment"
+        ],
+        "summary": "Create one comment",
+        "description": "",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ideaId",
+            "in": "path",
+            "type": "string",
+            "description": "Idea Id",
+            "required": true
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Authorization header for JWT",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Create comment",
+            "in": "body",
+            "description": "create comment",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "comment": {
+                  "type": "string"
+                },
+                "author":{
+                  "type":"string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Comment"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid tag value"
+          }
+        }
+      }
+    },
+    "/comment/{commentId}":{
+      "patch": {
+        "tags": [
+          "Comment"
+        ],
+        "summary": "Update comment",
+        "description": "",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "commentId",
+            "in": "path",
+            "type": "string",
+            "description": "Comment Id",
+            "required": true
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Authorization header fOr JWT",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Update Idea",
+            "in": "body",
+            "description": "Update Idea",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "comment": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Comment"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid tag value"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Comment"
+        ],
+        "summary": "Delete one comment",
+        "description": "",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "commentId",
+            "in": "path",
+            "type": "string",
+            "description": "Comment Id",
+            "required": true
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Authorization token jwt",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid tag value"
           }
         }
       }
@@ -124,81 +846,74 @@
   },
   "definitions": {
     "User": {
-      "required": [
-        "name",
-        "_id",
-        "companies"
-      ],
+      "type": "object",
       "properties": {
         "_id": {
-          "type": "integer",
-          "uniqueItems": true
-        },
-        "isPublic": {
-          "type": "boolean"
+          "type": "string"
         },
         "name": {
           "type": "string"
         },
-        "books": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "amount": {
-                "type": "number"
-              }
-            }
-          }
-        },
-        "companies": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+        "username": {
+          "type": "string"
         }
       }
     },
-    "updateUser": {
-      "required": [
-        "name",
-        "companies"
-      ],
+    "Idea":{
+      "type": "object",
       "properties": {
-        "isPublic": {
-          "type": "boolean"
-        },
-        "name": {
+        "_id": {
           "type": "string"
         },
-        "books": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "amount": {
-                "type": "number"
-              }
-            }
-          }
+        "idea": {
+          "type": "string"
         },
-        "companies": {
-          "type": "array",
-          "items": {
-            "type": "string"
+        "description":{
+          "type": "string"
+        },
+        "author":{
+          "type":"object",
+          "properties":{
+            "_id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "username": {
+              "type": "string"
+            }
           }
         }
       }
     },
-    "Users": {
-      "type": "array",
-      "$ref": "#/definitions/User"
+    "Comment":{
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        },
+        "ideaId":{
+          "type": "string"
+        },
+        "author":{
+          "type":"object",
+          "properties":{
+            "_id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "username": {
+              "type": "string"
+            }
+          }
+        }
+      }
     }
   }
 }
